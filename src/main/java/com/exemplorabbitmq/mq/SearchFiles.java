@@ -14,7 +14,7 @@ public class SearchFiles {
 
         List<Path> pathsToProcess = new ArrayList<>();
 
-        Files.walkFileTree(directory, Collections.emptySet(), 4, new SimpleFileVisitor<Path>() {
+        Files.walkFileTree(directory, Collections.emptySet(), 10, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                 File f = new File(String.valueOf(file));

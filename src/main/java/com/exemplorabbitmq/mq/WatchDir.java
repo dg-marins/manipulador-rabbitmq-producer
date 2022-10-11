@@ -98,6 +98,7 @@ public class WatchDir extends Thread {
                 continue;
             }
 
+            FileHandler fileHandler = new FileHandler();
             for (WatchEvent<?> event : key.pollEvents()) {
                 WatchEvent.Kind kind = event.kind();
 
@@ -112,6 +113,10 @@ public class WatchDir extends Thread {
                 Path child = dir.resolve(name);
 
                 System.out.format("%s: %s\n", event.kind().name(), child);
+                Map<String, String> fileInfo = fileHandler.getFileInfo(child);
+                System.out.println(fileInfo);
+
+                // REGISTRAR FILA
 
                 // Se for um diretorio criado, e for recursivo, então
                 // registra e seus sub-diretorios
