@@ -1,10 +1,12 @@
 package com.exemplorabbitmq.mq;
 
+import com.exemplorabbitmq.mq.videoprocessor.VideoProcess;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -16,28 +18,39 @@ public class Main {
         // Constantes
         boolean recursive = true;
 
+        List<String> validExtensions = Arrays.asList("mp4","avi");
         Path dir = Paths.get("/home/publico/imagens");
 
 
         //Busca por arquivos no diretorio base e retorna uma lista de Path
         SearchFiles searchFiles = new SearchFiles();
-        List<Path> arquivosExistentes = searchFiles.getFiles(dir);
+        List<Path> listFiles = searchFiles.getFiles(dir);
 
-        //Para cada arquivo existente na lista, retorna os dados do arquivo.
+        //Itera sobre a lista e retorna os dados do arquivo.
         FileHandler fileHandler = new FileHandler();
 
-        for (Path fileSource:arquivosExistentes) {
+        for (Path fileSource:listFiles) {
 
             Map<String, String> fileInfo = fileHandler.getFileInfo(fileSource);
-            System.out.println(fileInfo.get("carro"));
-            System.out.println(fileInfo);
-            //REGISTRAR NA FILA
+
+            //Valida a extensão
+            if(validExtensions.contains(fileInfo.get("extensao"))){
+                System.out.println("Extensao valida");
+                //REGISTRAR NA FILA PROCESSAR
+
+                VideoProcess videoProcess = new VideoProcess(fileInfo);
+                videoProcess.Teste();
+
+            } else {
+                System.out.println("Extensao invalida");
+                //REGISTRAR NA FILA APAGAR
+            }
 
         }
 
         //Inicia Watcher de arquivos do diretorio raiz.
-        WatchDir watchDir = new WatchDir(dir, recursive);
-        watchDir.start();
+//        WatchDir watchDir = new WatchDir(dir, recursive);
+//        watchDir.start();
 
 
         //---------------------------------------------------------------------------
