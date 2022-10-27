@@ -1,6 +1,7 @@
 package com.exemplorabbitmq.mq;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,8 +10,8 @@ public class FileHandler {
     public Map<String, String> getFileInfo(Path filePath){
 
         String direct = filePath.toString();
-        String[] parts = direct.split("Video");
-        String[] partSplit = parts[1].split("/");
+        String[] parts = direct.split("VIDEO");
+        String[] partSplit = parts[1].split("\\\\");
         String car = partSplit[1];
 
         String filename = filePath.getFileName().toString();

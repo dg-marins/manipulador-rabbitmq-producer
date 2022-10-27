@@ -19,7 +19,7 @@ public class Main {
         boolean recursive = true;
 
         List<String> validExtensions = Arrays.asList("mp4","avi");
-        Path dir = Paths.get("/home/publico/imagens");
+        Path dir = Paths.get("C:/VIDEO/");
 
 
         //Busca por arquivos no diretorio base e retorna uma lista de Path
