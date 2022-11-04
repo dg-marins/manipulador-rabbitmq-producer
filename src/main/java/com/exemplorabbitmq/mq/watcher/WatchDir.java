@@ -1,4 +1,6 @@
-package com.exemplorabbitmq.mq;
+package com.exemplorabbitmq.mq.watcher;
+
+import com.exemplorabbitmq.mq.filehandler.FileHandler;
 
 import java.io.IOException;
 import java.nio.file.*;

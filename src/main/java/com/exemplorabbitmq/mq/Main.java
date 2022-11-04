@@ -1,11 +1,13 @@
 package com.exemplorabbitmq.mq;
 
+import com.exemplorabbitmq.mq.filehandler.FileHandler;
+import com.exemplorabbitmq.mq.filehandler.SearchFiles;
 import com.exemplorabbitmq.mq.videoprocessor.VideoProcess;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -13,13 +15,13 @@ import java.util.Map;
 @SpringBootApplication
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ParseException {
 //
         // Constantes
         boolean recursive = true;
 
         List<String> validExtensions = Arrays.asList("mp4","avi");
-        Path dir = Paths.get("C:/VIDEO/");
+        Path dir = Paths.get("C:\\Users\\Douglas\\Desktop\\VIDEO");
 
 
         //Busca por arquivos no diretorio base e retorna uma lista de Path
@@ -39,7 +41,6 @@ public class Main {
                 //REGISTRAR NA FILA PROCESSAR
 
                 VideoProcess videoProcess = new VideoProcess(fileInfo);
-                videoProcess.Teste();
 
             } else {
                 System.out.println("Extensao invalida");
