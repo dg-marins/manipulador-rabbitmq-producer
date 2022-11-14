@@ -9,9 +9,7 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 public class VideoHandler {
 
@@ -31,7 +29,8 @@ public class VideoHandler {
         return time;
     }
 
-    public static void getFutureFilesName(Map<String, String> videoInformation) throws IOException, ParseException {
+    public static List<HashMap<String, String>> getFutureFilesName(Map<String, String> videoInformation) throws IOException, ParseException {
+
 
         String[] videoTime = getVideoDuration(
                 videoInformation.get("path") + "\\" + videoInformation.get("file"));
@@ -40,21 +39,30 @@ public class VideoHandler {
         int minutes = (hour*60) + Integer.parseInt(videoTime[1]);
         int seconds = Integer.parseInt(videoTime[2]);
 
-        String videoStartTime = videoInformation.get("data") + videoInformation.get("hora") ;
+        Date videoDate = new SimpleDateFormat("yyyy-MM-ddHHmmss").parse(
+                videoInformation.get("data") + videoInformation.get("hora"));
 
-        Date date = new SimpleDateFormat("yyyy-MM-ddHHmmss").parse(videoStartTime);
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        DateFormat fileNameFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        Date hourInicial = new SimpleDateFormat("HH:mm:ss").parse("00:00:00");
+
+        List <HashMap<String,String>> futureFilesName = new ArrayList<HashMap<String,String>>();;
 
         for (int i=0; i < minutes; i++) {
 
-            String fileName = dateFormat.format(date) + "." + videoInformation.get("extensao");
-            System.out.println(fileName);
+            HashMap<String, String> dados = new HashMap<>();
 
-            date = DateUtils.addMinutes(date, 1);
+            dados.put("fileName", fileNameFormat.format(videoDate) + "." + videoInformation.get("extensao"));
+
+            videoDate = DateUtils.addMinutes(videoDate, 1);
+
         }
 
-        System.out.println(date);
+        if(seconds > 0){
+            HashMap<String, String> dados = new HashMap<>();
 
+            dados.put("fileName", fileNameFormat.format(videoDate) + "." + videoInformation.get("extensao"));
+        }
 
+        return futureFilesName;
     };
 }
