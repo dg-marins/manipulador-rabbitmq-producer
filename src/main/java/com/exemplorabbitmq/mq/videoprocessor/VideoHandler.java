@@ -24,12 +24,12 @@ public class VideoHandler {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         String dataRead = bufferedReader.readLine();
         String hourMinSec = dataRead.split("\\.")[0];
-        String[] time = hourMinSec.split(":");
 
-        return time;
+        return hourMinSec.split(":");
     }
 
-    public static List<HashMap<String, String>> getFutureFilesName(Map<String, String> videoInformation) throws IOException, ParseException {
+    public static List<HashMap<String, String>> getFutureFilesName(
+            Map<String, String> videoInformation) throws IOException, ParseException {
 
 
         String[] videoTime = getVideoDuration(
@@ -43,26 +43,49 @@ public class VideoHandler {
                 videoInformation.get("data") + videoInformation.get("hora"));
 
         DateFormat fileNameFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-        Date hourInicial = new SimpleDateFormat("HH:mm:ss").parse("00:00:00");
 
         List <HashMap<String,String>> futureFilesName = new ArrayList<HashMap<String,String>>();;
+
+        Date hourInicial = new SimpleDateFormat("HH:mm:ss").parse("00:00:00");
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
         for (int i=0; i < minutes; i++) {
 
             HashMap<String, String> dados = new HashMap<>();
 
             dados.put("fileName", fileNameFormat.format(videoDate) + "." + videoInformation.get("extensao"));
+            dados.put("startTime", timeFormat.format(hourInicial));
 
             videoDate = DateUtils.addMinutes(videoDate, 1);
 
+            hourInicial = DateUtils.addMinutes(hourInicial, 1);
+            dados.put("finalTime", timeFormat.format(hourInicial) );
+
+            futureFilesName.add(dados);
         }
 
         if(seconds > 0){
             HashMap<String, String> dados = new HashMap<>();
 
             dados.put("fileName", fileNameFormat.format(videoDate) + "." + videoInformation.get("extensao"));
+            dados.put("startTime", timeFormat.format(hourInicial));
+
+            hourInicial = DateUtils.addSeconds(hourInicial, seconds);
+            dados.put("finalTime", timeFormat.format(hourInicial) );
+
+            futureFilesName.add(dados);
         }
 
         return futureFilesName;
     };
+
+    public static void cutVideo(
+            String sourceFile, String newFileName, String startTime, String endTime) throws IOException {
+
+        String[] command = {"ffmpeg", "-i", sourceFile,"-ss", startTime,"-to", endTime, "-c", "copy",
+                newFileName};
+
+        Runtime.getRuntime().exec(command);
+
+    }
 }

@@ -1,11 +1,15 @@
 package com.exemplorabbitmq.mq.watcher;
 
 import com.exemplorabbitmq.mq.filehandler.FileHandler;
+import com.exemplorabbitmq.mq.videoprocessor.VideoProcess;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
@@ -20,6 +24,8 @@ public class WatchDir extends Thread {
     private final WatchService watcher;
     private final Map<WatchKey, Path> keys;
     private final boolean recursive;
+    private final List<String> validExtensions;
+    private final Path sourcePathToSave;
     private boolean trace = false;
 
     @SuppressWarnings("unchecked")
@@ -63,15 +69,15 @@ public class WatchDir extends Thread {
     /**
      * Cria um WatchService e registra o directory
      */
-    WatchDir(Path dir, boolean recursive) throws IOException {
+    public WatchDir(Path dir, boolean recursive, List<String> validExtensions, Path sourcePathToSave) throws IOException {
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<WatchKey, Path>();
         this.recursive = recursive;
+        this.validExtensions = validExtensions;
+        this.sourcePathToSave = sourcePathToSave;
 
         if (recursive) {
-            System.out.format("Scanning %s ...\n", dir);
             registerAll(dir);
-            System.out.println("Done.");
         } else {
             register(dir);
         }
@@ -83,7 +89,7 @@ public class WatchDir extends Thread {
     /**
      * Processa todos os eventos por keys queued ao watcher.
      */
-    void processEvents() {
+    void processEvents() throws IOException, ParseException {
         for (; ; ) {
 
             // Aguarda por keys para serem sinalizadas
@@ -100,9 +106,8 @@ public class WatchDir extends Thread {
                 continue;
             }
 
-            FileHandler fileHandler = new FileHandler();
             for (WatchEvent<?> event : key.pollEvents()) {
-                WatchEvent.Kind kind = event.kind();
+                WatchEvent.Kind<?> kind = event.kind();
 
                 // TBD - provide example of how OVERFLOW event is handled
                 if (kind == OVERFLOW) {
@@ -114,21 +119,27 @@ public class WatchDir extends Thread {
                 Path name = ev.context();
                 Path child = dir.resolve(name);
 
-                System.out.format("%s: %s\n", event.kind().name(), child);
-                Map<String, String> fileInfo = fileHandler.getFileInfo(child);
-                System.out.println(fileInfo);
-
-                // REGISTRAR FILA
+//                 System.out.format("%s: %s\n", event.kind().name(), child);
 
                 // Se for um diretorio criado, e for recursivo, então
                 // registra e seus sub-diretorios
                 if (recursive && (kind == ENTRY_CREATE)) {
+
+                    System.out.format("%s: %s\n", event.kind().name(), child);
+
                     try {
                         if (Files.isDirectory(child, NOFOLLOW_LINKS)) {
                             registerAll(child);
                         }
                     } catch (IOException x) {
                         // Ignore, mantendo o codigo legivel
+                    }
+
+                    if(validExtensions.contains(FilenameUtils.getExtension(String.valueOf(child)))) {
+
+                        //REGISTRAR NA FILA PROCESSAR
+                        new VideoProcess(child, sourcePathToSave);
+
                     }
                 }
             }
@@ -148,7 +159,11 @@ public class WatchDir extends Thread {
     }
 
     public void run() {
-        processEvents();
+        try {
+            processEvents();
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
