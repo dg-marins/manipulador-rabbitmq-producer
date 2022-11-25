@@ -47,7 +47,7 @@ public class Main {
         }
 
         //Inicia Watcher de arquivos do diretorio raiz.
-        WatchDir watchDir = new WatchDir(dir, recursive, validExtensions, sourcePathToSave);
+        WatchDir watchDir = new WatchDir(dir, validExtensions, sourcePathToSave);
         watchDir.start();
 
         //---------------------------------------------------------------------------

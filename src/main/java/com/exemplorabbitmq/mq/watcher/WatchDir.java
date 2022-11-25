@@ -69,18 +69,14 @@ public class WatchDir extends Thread {
     /**
      * Cria um WatchService e registra o directory
      */
-    public WatchDir(Path dir, boolean recursive, List<String> validExtensions, Path sourcePathToSave) throws IOException {
+    public WatchDir(Path dir, List<String> validExtensions, Path sourcePathToSave) throws IOException {
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<WatchKey, Path>();
-        this.recursive = recursive;
+        this.recursive = true;
         this.validExtensions = validExtensions;
         this.sourcePathToSave = sourcePathToSave;
 
-        if (recursive) {
-            registerAll(dir);
-        } else {
-            register(dir);
-        }
+        registerAll(dir);
 
         // Habilita o trace depois do registro inicial
         this.trace = true;

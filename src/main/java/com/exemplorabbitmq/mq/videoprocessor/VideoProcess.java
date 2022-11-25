@@ -19,20 +19,18 @@ import com.exemplorabbitmq.mq.filehandler.FileHandler;
 public class VideoProcess {
     Map<String,String> videoInformation;
 
-    public VideoProcess(Path filePath, Path sourcePathToSave) throws IOException, ParseException {
+    public VideoProcess(Path sourceFilePath, Path sourcePathToSave) throws IOException, ParseException {
 
         FileHandler fileHandler = new FileHandler();
+        this.videoInformation = fileHandler.getFileInfo(sourceFilePath);
 
-        long fileSize = Files.size(filePath);
+        //Não trata o vídeo enquanto não for finalizado o descarregamento.
+        long fileSize = Files.size(sourceFilePath);
         while(fileSize <= 0){
-            System.out.println("Menor " + fileSize);
-            fileSize = Files.size(filePath);
+            fileSize = Files.size(sourceFilePath);
         }
-        System.out.println("Maior " + fileSize);
 
-        this.videoInformation = fileHandler.getFileInfo(filePath);
-
-        String videoPath = videoInformation.get("path") + "\\" + videoInformation.get("file");
+        String sourceVideoPath = videoInformation.get("path") + "\\" + videoInformation.get("file");
         List<HashMap<String, String>> listOfFutureFiles = getFutureFilesName(videoInformation);
 
         Path fullPathToSave = Paths.get(String.valueOf(sourcePathToSave), videoInformation.get("carro"),
@@ -45,13 +43,16 @@ public class VideoProcess {
         for (HashMap<String, String> fileInformation : listOfFutureFiles) {
 
             Path fileNamePath = Paths.get(String.valueOf(fullPathToSave), fileInformation.get("fileName"));
+            File file = new File(fileNamePath.toUri());
 
-            cutVideo(videoPath, String.valueOf(fileNamePath),
-                    fileInformation.get("startTime"), fileInformation.get("finalTime"));
+            if(!file.exists()){
+                cutVideo(sourceVideoPath, String.valueOf(fileNamePath),
+                        fileInformation.get("startTime"), fileInformation.get("finalTime"));
+            }
 
         }
 
-        //ADICIONAR VIDEO A FILA DE APAGAR
+        //ADICIONAR SOURCE VIDEO A FILA DE APAGAR
 
     }
 
