@@ -17,49 +17,35 @@ public class Main {
 
     public static void main(String[] args) throws IOException, ParseException {
 
-//        // Constantes
-        boolean recursive = true;
-
+        // Constantes (Irão para arquivo de configuração!)
         List<String> validExtensions = Arrays.asList("mp4","avi");
-        Path dir = Paths.get("C:\\VIDEO");
-        Path sourcePathToSave = Paths.get("C:\\Users\\Douglas\\Desktop\\home\\publico\\imagens");
+        Path sourceDirectory = Paths.get("C:\\VIDEO");
+        Path pathToSave = Paths.get("C:\\Users\\Douglas\\Desktop\\home\\publico\\imagens");
 
+        //Módulo1
         //Busca por arquivos no diretorio base e retorna uma lista de Path
         SearchFiles searchFiles = new SearchFiles();
-        List<Path> listFiles = searchFiles.getFiles(dir);
+        List<Path> listExistingFiles = searchFiles.getFiles(sourceDirectory);
 
         //Itera sobre a lista e retorna os dados do arquivo.
 
-        for (Path fileSource:listFiles) {
+        for (Path existingFile:listExistingFiles) {
 
             //Valida a extensão
-            if(validExtensions.contains(FilenameUtils.getExtension(String.valueOf(fileSource)))) {
+            if(validExtensions.contains(FilenameUtils.getExtension(String.valueOf(existingFile)))) {
 
                 //REGISTRAR NA FILA PROCESSAR
-                new VideoProcess(fileSource, sourcePathToSave);
+                new VideoProcess(existingFile, pathToSave);
 
             } else {
-
-                System.out.println("Extensao invalida");
                 //REGISTRAR NA FILA APAGAR
+                System.out.println("Extensao invalida");
             }
-
         }
 
         //Inicia Watcher de arquivos do diretorio raiz.
-        WatchDir watchDir = new WatchDir(dir, validExtensions, sourcePathToSave);
+        WatchDir watchDir = new WatchDir(sourceDirectory, validExtensions, pathToSave);
         watchDir.start();
-
-        //---------------------------------------------------------------------------
-
-//        CustomMessage customMessage = new CustomMessage();
-//        customMessage.setMessage(arquivosExistentes.toString());
-
-//        MessagePublisher messagePublisher = new MessagePublisher();
-//        messagePublisher.publishMessage(customMessage);
-
-//        SpringApplication.run(SpringRabbitmqProducerApplication.class, args);
-
 
     }
 }

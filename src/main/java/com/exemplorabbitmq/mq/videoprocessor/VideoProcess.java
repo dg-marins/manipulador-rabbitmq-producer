@@ -14,7 +14,6 @@ import java.util.Map;
 
 import static com.exemplorabbitmq.mq.videoprocessor.VideoHandler.getFutureFilesName;
 import static com.exemplorabbitmq.mq.videoprocessor.VideoHandler.cutVideo;
-import com.exemplorabbitmq.mq.filehandler.FileHandler;
 
 public class VideoProcess {
     Map<String,String> videoInformation;
@@ -24,7 +23,7 @@ public class VideoProcess {
         FileHandler fileHandler = new FileHandler();
         this.videoInformation = fileHandler.getFileInfo(sourceFilePath);
 
-        //Não trata o vídeo enquanto não for finalizado o descarregamento.
+        //Não trata o vídeo enquanto não tenha finalizado o descarregamento.
         long fileSize = Files.size(sourceFilePath);
         while(fileSize <= 0){
             fileSize = Files.size(sourceFilePath);
