@@ -1,7 +1,8 @@
-package com.exemplorabbitmq.mq.videoprocessor;
+package sectrans.manipulador.springboot.videoprocessor;
 
 
-import com.exemplorabbitmq.mq.filehandler.FileHandler;
+import org.springframework.context.annotation.Bean;
+import sectrans.manipulador.springboot.filehandler.FileHandler;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -12,8 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.exemplorabbitmq.mq.videoprocessor.VideoHandler.getFutureFilesName;
-import static com.exemplorabbitmq.mq.videoprocessor.VideoHandler.cutVideo;
+import static sectrans.manipulador.springboot.videoprocessor.VideoHandler.getFutureFilesName;
+import static sectrans.manipulador.springboot.videoprocessor.VideoHandler.cutVideo;
 
 public class VideoProcess {
     Map<String,String> videoInformation;

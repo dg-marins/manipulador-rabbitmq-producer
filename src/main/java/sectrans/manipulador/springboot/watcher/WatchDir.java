@@ -1,7 +1,6 @@
-package com.exemplorabbitmq.mq.watcher;
+package sectrans.manipulador.springboot.watcher;
 
-import com.exemplorabbitmq.mq.filehandler.FileHandler;
-import com.exemplorabbitmq.mq.videoprocessor.VideoProcess;
+import sectrans.manipulador.springboot.videoprocessor.VideoProcess;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.IOException;

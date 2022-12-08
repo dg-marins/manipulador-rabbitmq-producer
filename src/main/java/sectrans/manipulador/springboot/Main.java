@@ -1,10 +1,10 @@
-package com.exemplorabbitmq.mq;
+package sectrans.manipulador.springboot;
 
-import com.exemplorabbitmq.mq.filehandler.SearchFiles;
-import com.exemplorabbitmq.mq.videoprocessor.VideoProcess;
-import com.exemplorabbitmq.mq.watcher.WatchDir;
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import sectrans.manipulador.springboot.filehandler.SearchFiles;
+import sectrans.manipulador.springboot.videoprocessor.VideoProcess;
+import sectrans.manipulador.springboot.watcher.WatchDir;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,7 +12,6 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 
-@SpringBootApplication
 public class Main {
 
     public static void main(String[] args) throws IOException, ParseException {

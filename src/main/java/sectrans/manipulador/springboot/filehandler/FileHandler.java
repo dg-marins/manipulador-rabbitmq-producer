@@ -1,4 +1,4 @@
-package com.exemplorabbitmq.mq.filehandler;
+package sectrans.manipulador.springboot.filehandler;
 
 import java.nio.file.Path;
 import java.util.Arrays;
