@@ -5,6 +5,7 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.stereotype.Component;
+import sectrans.manipulador.springboot.constantes.RabbitmqConstantes;
 
 import javax.annotation.PostConstruct;
 

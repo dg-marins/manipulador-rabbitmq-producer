@@ -1,5 +1,6 @@
 package sectrans.manipulador.springboot.filehandler;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,6 +31,16 @@ public class FileHandler {
         object.put("file", filename);
 
         return object;
+    }
+
+    public static void eraseFile(String pathToRemove){
+
+        File file = new File(pathToRemove);
+
+        if (file.delete()){
+            System.out.printf("Deleted file: %s%n", pathToRemove);
+        }
+
     }
 
 

@@ -1,6 +1,9 @@
 package sectrans.manipulador.springboot.watcher;
 
-import sectrans.manipulador.springboot.videoprocessor.VideoProcess;
+import sectrans.manipulador.springboot.constantes.RabbitmqConstantes;
+import sectrans.manipulador.springboot.constantes.SectransConstantes;
+import sectrans.manipulador.springboot.dto.ProcessDto;
+import sectrans.manipulador.springboot.service.RabbitMQService;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.IOException;
@@ -26,6 +29,8 @@ public class WatchDir extends Thread {
     private final List<String> validExtensions;
     private final Path sourcePathToSave;
     private boolean trace = false;
+
+    private RabbitMQService rabbitMQService;
 
     @SuppressWarnings("unchecked")
     static <T> WatchEvent<T> cast(WatchEvent<?> event) {
@@ -85,6 +90,7 @@ public class WatchDir extends Thread {
      * Processa todos os eventos por keys queued ao watcher.
      */
     void processEvents() throws IOException, ParseException {
+
         for (; ; ) {
 
             // Aguarda por keys para serem sinalizadas
@@ -133,7 +139,11 @@ public class WatchDir extends Thread {
                     if(validExtensions.contains(FilenameUtils.getExtension(String.valueOf(child)))) {
 
                         //REGISTRAR NA FILA PROCESSAR
-                        new VideoProcess(child, sourcePathToSave);
+//                        VideoProcess.process(String.valueOf(child), String.valueOf(sourcePathToSave));
+                        ProcessDto processDto = new ProcessDto();
+                        processDto.sourceFilePath = String.valueOf(child);
+                        processDto.sourcePathToSave = String.valueOf(SectransConstantes.PATH_TO_SAVE);
+                        this.rabbitMQService.enviaMensagem(RabbitmqConstantes.FILA_PROCESS, processDto);
 
                     }
                 }

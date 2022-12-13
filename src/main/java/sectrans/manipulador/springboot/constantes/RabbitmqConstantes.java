@@ -1,4 +1,4 @@
-package sectrans.manipulador.springboot.conections;
+package sectrans.manipulador.springboot.constantes;
 
 public class RabbitmqConstantes {
     public static final String FILA_PROCESS   = "PROCESS";
