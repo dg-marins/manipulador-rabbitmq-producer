@@ -7,9 +7,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import sectrans.manipulador.springboot.constantes.RabbitmqConstantes;
+import sectrans.manipulador.springboot.constantes.QueueConstants;
 import sectrans.manipulador.springboot.dto.EraseDto;
-import sectrans.manipulador.springboot.dto.ProcessDto;
+import sectrans.manipulador.springboot.dto.ProcessConfig;
 import sectrans.manipulador.springboot.filehandler.SearchFiles;
 import sectrans.manipulador.springboot.service.RabbitMQService;
 import sectrans.manipulador.springboot.constantes.SectransConstantes;
@@ -37,12 +37,16 @@ public class FirstModule {
         SearchFiles searchFiles = new SearchFiles();
         List<Path> listExistingFiles = searchFiles.getFiles(SectransConstantes.SOURCE_DIRECTORY);
 
+        EraseDto eraseDto = new EraseDto();
+
         //Itera sobre a lista e retorna os dados do arquivo.
         for (Path existingFile:listExistingFiles) {
 
             //Filtra arquivos manipulados anteriormente.
             if(processedFiles.contains(String.valueOf(existingFile))){
                 log.info("Arquivo já manipulado: {}", existingFile);
+                eraseDto.pathToRemove = String.valueOf(existingFile);
+                this.rabbitMQService.enviaMensagem(QueueConstants.DELETION_QUEUE, eraseDto);
                 continue;
             }
 
@@ -50,20 +54,19 @@ public class FirstModule {
             if(SectransConstantes.VALID_EXTENSIONS.contains(FilenameUtils.getExtension(String.valueOf(existingFile)))) {
 
                 //Envia arquivo válido para fila de processamento
-                ProcessDto processDto = new ProcessDto();
-                processDto.sourceFilePath = String.valueOf(existingFile);
-                processDto.sourcePathToSave = String.valueOf(SectransConstantes.PATH_TO_SAVE);
+                ProcessConfig processConfig = new ProcessConfig();
+                processConfig.sourceFilePath = String.valueOf(existingFile);
+                processConfig.sourcePathToSave = String.valueOf(SectransConstantes.PATH_TO_SAVE);
 
                 this.processedFiles.add(String.valueOf(existingFile));
-                this.rabbitMQService.enviaMensagem(RabbitmqConstantes.FILA_PROCESS, processDto);
+                this.rabbitMQService.enviaMensagem(QueueConstants.PROCESS_QUEUE, processConfig);
 
             }
             //Envia arquivo inválido para fila de apagar.
             else {
-                EraseDto eraseDto = new EraseDto();
 
                 eraseDto.pathToRemove = String.valueOf(existingFile);
-                this.rabbitMQService.enviaMensagem(RabbitmqConstantes.FILA_ERASE, eraseDto);
+                this.rabbitMQService.enviaMensagem(QueueConstants.DELETION_QUEUE, eraseDto);
             }
         }
     }

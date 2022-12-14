@@ -1,17 +1,12 @@
 package sectrans.manipulador.springboot.filehandler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 import sectrans.manipulador.springboot.dto.VideoDto;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
-@Component
 public class FileHandler {
 public VideoDto getFileInfo(Path source){
 

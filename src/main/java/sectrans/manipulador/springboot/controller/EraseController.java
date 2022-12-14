@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sectrans.manipulador.springboot.constantes.RabbitmqConstantes;
+import sectrans.manipulador.springboot.constantes.QueueConstants;
 import sectrans.manipulador.springboot.dto.EraseDto;
 import sectrans.manipulador.springboot.service.RabbitMQService;
 
@@ -20,7 +20,7 @@ public class EraseController {
     @PutMapping
     private ResponseEntity eraseFile(@RequestBody EraseDto eraseDto){
 
-        this.rabbitMQService.enviaMensagem(RabbitmqConstantes.FILA_ERASE, eraseDto);
+        this.rabbitMQService.enviaMensagem(QueueConstants.DELETION_QUEUE, eraseDto);
         System.out.println(eraseDto.pathToRemove);
         return new ResponseEntity(HttpStatus.OK);
 

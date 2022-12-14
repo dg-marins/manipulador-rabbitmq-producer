@@ -1,8 +1,8 @@
 package sectrans.manipulador.springboot.watcher;
 
-import sectrans.manipulador.springboot.constantes.RabbitmqConstantes;
+import sectrans.manipulador.springboot.constantes.QueueConstants;
 import sectrans.manipulador.springboot.constantes.SectransConstantes;
-import sectrans.manipulador.springboot.dto.ProcessDto;
+import sectrans.manipulador.springboot.dto.ProcessConfig;
 import sectrans.manipulador.springboot.service.RabbitMQService;
 import org.apache.commons.io.FilenameUtils;
 
@@ -140,10 +140,10 @@ public class WatchDir extends Thread {
 
                         //REGISTRAR NA FILA PROCESSAR
 //                        VideoProcess.process(String.valueOf(child), String.valueOf(sourcePathToSave));
-                        ProcessDto processDto = new ProcessDto();
-                        processDto.sourceFilePath = String.valueOf(child);
-                        processDto.sourcePathToSave = String.valueOf(SectransConstantes.PATH_TO_SAVE);
-                        this.rabbitMQService.enviaMensagem(RabbitmqConstantes.FILA_PROCESS, processDto);
+                        ProcessConfig processConfig = new ProcessConfig();
+                        processConfig.sourceFilePath = String.valueOf(child);
+                        processConfig.sourcePathToSave = String.valueOf(SectransConstantes.PATH_TO_SAVE);
+                        this.rabbitMQService.enviaMensagem(QueueConstants.PROCESS_QUEUE, processConfig);
 
                     }
                 }

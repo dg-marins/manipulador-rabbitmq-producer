@@ -5,7 +5,7 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.stereotype.Component;
-import sectrans.manipulador.springboot.constantes.RabbitmqConstantes;
+import sectrans.manipulador.springboot.constantes.QueueConstants;
 
 import javax.annotation.PostConstruct;
 
@@ -32,8 +32,8 @@ public class RabbitMQConection {
 
     @PostConstruct
     private void add(){
-        Queue filaProcess = this.fila(RabbitmqConstantes.FILA_PROCESS);
-        Queue filaErase = this.fila(RabbitmqConstantes.FILA_ERASE);
+        Queue filaProcess = this.fila(QueueConstants.PROCESS_QUEUE);
+        Queue filaErase = this.fila(QueueConstants.DELETION_QUEUE);
 
         DirectExchange exchange = this.chanceDirect();
 
