@@ -1,5 +1,6 @@
 package sectrans.manipulador.springboot.watcher;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -21,6 +22,7 @@ import java.util.List;
 @Component
 @Service
 @EnableScheduling
+@Slf4j
 public class FirstModule {
 
     @Autowired
@@ -40,7 +42,7 @@ public class FirstModule {
 
             //Filtra arquivos manipulados anteriormente.
             if(processedFiles.contains(String.valueOf(existingFile))){
-                System.out.println("Arquivo já manipulado");
+                log.info("Arquivo já manipulado: {}", existingFile);
                 continue;
             }
 

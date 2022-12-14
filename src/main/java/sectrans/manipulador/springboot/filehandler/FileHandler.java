@@ -1,11 +1,13 @@
 package sectrans.manipulador.springboot.filehandler;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class FileHandler {
     public Map<String, String> getFileInfo(Path source){
 
@@ -38,7 +40,7 @@ public class FileHandler {
         File file = new File(pathToRemove);
 
         if (file.delete()){
-            System.out.printf("Deleted file: %s%n", pathToRemove);
+            log.info("Deleted file: {}", pathToRemove);
         }
 
     }

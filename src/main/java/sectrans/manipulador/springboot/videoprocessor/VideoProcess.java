@@ -2,6 +2,7 @@ package sectrans.manipulador.springboot.videoprocessor;
 
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import static sectrans.manipulador.springboot.videoprocessor.VideoHandler.cutVid
 
 @Component
 @Service
+@Slf4j
 public class VideoProcess {
 
     public static void process(String sourceFilePath, String sourcePathToSave) throws IOException, ParseException {
@@ -57,6 +59,9 @@ public class VideoProcess {
             if(!file.exists()){
                 cutVideo(sourceVideoPath, String.valueOf(fileNamePath),
                         fileInformation.get("startTime"), fileInformation.get("finalTime"));
+            }
+            else {
+                log.info("Fragmento existente: {}", fileInformation.get("fileName"));
             }
 
         }
