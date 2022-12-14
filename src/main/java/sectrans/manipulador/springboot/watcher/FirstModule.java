@@ -58,7 +58,7 @@ public class FirstModule {
                 this.rabbitMQService.enviaMensagem(RabbitmqConstantes.FILA_PROCESS, processDto);
 
             }
-            //Envia arquivo inválido para fila de apagar
+            //Envia arquivo inválido para fila de apagar.
             else {
                 EraseDto eraseDto = new EraseDto();
 

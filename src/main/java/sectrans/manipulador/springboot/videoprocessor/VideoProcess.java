@@ -1,15 +1,10 @@
 package sectrans.manipulador.springboot.videoprocessor;
 
-
-
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import sectrans.manipulador.springboot.constantes.RabbitmqConstantes;
-import sectrans.manipulador.springboot.dto.EraseDto;
+import sectrans.manipulador.springboot.dto.VideoDto;
 import sectrans.manipulador.springboot.filehandler.FileHandler;
-import sectrans.manipulador.springboot.service.RabbitMQService;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -30,26 +25,21 @@ public class VideoProcess {
 
     public static void process(String sourceFilePath, String sourcePathToSave) throws IOException, ParseException {
 
-
         FileHandler fileHandler = new FileHandler();
-        Map<String,String> videoInformation = fileHandler.getFileInfo(Path.of(sourceFilePath));
+//        Map<String,String> videoInformation = fileHandler.getFileInfo(Path.of(sourceFilePath));
+        VideoDto videoInformation = fileHandler.getFileInfo(Path.of(sourceFilePath));
 
-        //Não trata o vídeo enquanto não tenha finalizado o descarregamento.
-        long fileSize = Files.size(Path.of(sourceFilePath));
-        while(fileSize <= 0){
-            fileSize = Files.size(Path.of(sourceFilePath));
-        }
-
-        String sourceVideoPath = String.format("%s%s%s",videoInformation.get("path"), "/", videoInformation.get("file"));
+        String sourceVideoPath = String.format("%s%s%s",videoInformation.path, "/", videoInformation.file);
         List<HashMap<String, String>> listOfFutureFiles = getFutureFilesName(videoInformation);
 
-        Path fullPathToSave = Paths.get(String.valueOf(sourcePathToSave), videoInformation.get("carro"),
-                "camera"+videoInformation.get("camera"), videoInformation.get("data"));
+        Path fullPathToSave = Paths.get(String.valueOf(sourcePathToSave), videoInformation.car,
+                "camera"+videoInformation.camera, videoInformation.data);
 
         if (!Files.isDirectory(fullPathToSave)){
             Files.createDirectories(fullPathToSave);;
         }
 
+        //Desmembra o vídeo original
         for (HashMap<String, String> fileInformation : listOfFutureFiles) {
 
             Path fileNamePath = Paths.get(String.valueOf(fullPathToSave), fileInformation.get("fileName"));
@@ -65,6 +55,13 @@ public class VideoProcess {
             }
 
         }
+
+        //Enviado video original para a fila apagar.
+//        EraseDto eraseDto = new EraseDto();
+//
+//        eraseDto.pathToRemove = String.valueOf(sourceFilePath);
+//        RabbitMQService rabbitMQService = new RabbitMQService();
+//        rabbitMQService.enviaMensagem(RabbitmqConstantes.FILA_ERASE, eraseDto);
 
     }
 

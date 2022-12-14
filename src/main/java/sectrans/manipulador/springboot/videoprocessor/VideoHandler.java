@@ -1,6 +1,8 @@
 package sectrans.manipulador.springboot.videoprocessor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateUtils;
+import sectrans.manipulador.springboot.dto.VideoDto;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Slf4j
 public class VideoHandler {
 
     private static String[] getVideoDuration(String videoPath) throws IOException {
@@ -29,18 +32,18 @@ public class VideoHandler {
     }
 
     public static List<HashMap<String, String>> getFutureFilesName(
-            Map<String, String> videoInformation) throws IOException, ParseException {
+            VideoDto videoInformation) throws IOException, ParseException {
 
 
         String[] videoTime = getVideoDuration(
-                videoInformation.get("path") + "\\" + videoInformation.get("file"));
+                videoInformation.path + "\\" + videoInformation.file);
 
         int hour = Integer.parseInt(videoTime[0]);
         int minutes = (hour*60) + Integer.parseInt(videoTime[1]);
         int seconds = Integer.parseInt(videoTime[2]);
 
         Date videoDate = new SimpleDateFormat("yyyy-MM-ddHHmmss").parse(
-                videoInformation.get("data") + videoInformation.get("hora"));
+                videoInformation.data + videoInformation.hora);
 
         DateFormat fileNameFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 
@@ -53,7 +56,7 @@ public class VideoHandler {
 
             HashMap<String, String> dados = new HashMap<>();
 
-            dados.put("fileName", fileNameFormat.format(videoDate) + "." + videoInformation.get("extensao"));
+            dados.put("fileName", fileNameFormat.format(videoDate) + "." + videoInformation.extension);
             dados.put("startTime", timeFormat.format(hourInicial));
 
             videoDate = DateUtils.addMinutes(videoDate, 1);
@@ -67,7 +70,7 @@ public class VideoHandler {
         if(seconds > 0){
             HashMap<String, String> dados = new HashMap<>();
 
-            dados.put("fileName", fileNameFormat.format(videoDate) + "." + videoInformation.get("extensao"));
+            dados.put("fileName", fileNameFormat.format(videoDate) + "." + videoInformation.extension);
             dados.put("startTime", timeFormat.format(hourInicial));
 
             hourInicial = DateUtils.addSeconds(hourInicial, seconds);
@@ -86,6 +89,8 @@ public class VideoHandler {
                 newFileName};
 
         Runtime.getRuntime().exec(command);
+
+        log.info("Fragmento Criado: {}", newFileName);
 
     }
 }

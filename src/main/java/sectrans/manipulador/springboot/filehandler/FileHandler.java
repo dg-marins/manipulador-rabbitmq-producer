@@ -1,6 +1,9 @@
 package sectrans.manipulador.springboot.filehandler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
+import sectrans.manipulador.springboot.dto.VideoDto;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -8,8 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
+@Component
 public class FileHandler {
-    public Map<String, String> getFileInfo(Path source){
+public VideoDto getFileInfo(Path source){
 
         String filePath = source.toString();
         String[] filePathSplit = filePath.split("VIDEO")[1].split("\\\\");
@@ -22,18 +26,18 @@ public class FileHandler {
         String car = filePathSplit[1];
         String date = filePathSplit[2];
 
+        VideoDto videoDto = new VideoDto();
+        videoDto.camera = camera;
+        videoDto.data = date;
+        videoDto.hora = hour;
+        videoDto.extension = extension;
+        videoDto.car = car;
+        videoDto.path = source.toFile().getParent();
+        videoDto.file = filename;
 
-        Map<String, String> object = new HashMap<>();
-        object.put("camera", camera);
-        object.put("data", date);
-        object.put("hora", hour);
-        object.put("extensao", extension);
-        object.put("carro", car);
-        object.put("path", source.toFile().getParent());
-        object.put("file", filename);
-
-        return object;
+        return videoDto;
     }
+
 
     public static void eraseFile(String pathToRemove){
 
