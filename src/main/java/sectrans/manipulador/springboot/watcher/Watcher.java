@@ -23,13 +23,13 @@ import java.util.List;
 @Service
 @EnableScheduling
 @Slf4j
-public class FirstModule {
+public class Watcher {
 
     @Autowired
     private RabbitMQService rabbitMQService;
     public final List<String> processedFiles = new ArrayList<>();
     @Autowired
-    @Scheduled(cron = "*/30 * * * * *")
+    @Scheduled(cron = "*/60 * * * * *")
     public void process() throws IOException {
 
         //Módulo1

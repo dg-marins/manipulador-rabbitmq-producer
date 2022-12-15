@@ -19,13 +19,8 @@ public class ProcessController {
     private RabbitMQService rabbitMQService;
     @PutMapping
     private ResponseEntity processVideo(@RequestBody ProcessConfig processConfig){
-        System.out.println("\n------------- Recebido HTTPS -------------");
-        System.out.println(processConfig.sourceFilePath);
-        System.out.println(processConfig.sourcePathToSave);
 
         this.rabbitMQService.enviaMensagem(QueueConstants.PROCESS_QUEUE, processConfig);
-        System.out.println(" ------------- Enviado a Fila ------------- \n");
-
         return new ResponseEntity(HttpStatus.OK);
 
     }

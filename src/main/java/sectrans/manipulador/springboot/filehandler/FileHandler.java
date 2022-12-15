@@ -1,6 +1,7 @@
 package sectrans.manipulador.springboot.filehandler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.retry.backoff.ThreadWaitSleeper;
 import sectrans.manipulador.springboot.dto.VideoDto;
 
 import java.io.File;
@@ -34,15 +35,23 @@ public VideoDto getFileInfo(Path source){
     }
 
 
-    public static void eraseFile(String pathToRemove){
+    public static void eraseFile(String pathToRemove) throws InterruptedException {
 
         File file = new File(pathToRemove);
+        int x = 0;
 
-        if (file.delete()){
-            log.info("Deleted file: {}", pathToRemove);
+        while(x <= 2) {
+
+            if (file.delete()) {
+                log.info("Arquivo deletado: {}", pathToRemove);
+                return;
+            }
+            Thread.sleep(5000);
+            x++;
         }
 
-    }
+        log.info("Falha ao deletar arquivo: {}", pathToRemove);
 
+    }
 
 }

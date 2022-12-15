@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import sectrans.manipulador.springboot.constantes.QueueConstants;
+import sectrans.manipulador.springboot.constantes.SectransConstantes;
 import sectrans.manipulador.springboot.dto.EraseDto;
 import sectrans.manipulador.springboot.dto.ProcessConfig;
 import sectrans.manipulador.springboot.filehandler.FileHandler;
@@ -26,10 +27,11 @@ public class QueueListener {
         manager.split(processConfig.sourceFilePath, processConfig.sourcePathToSave);
 
     }
-
     @RabbitListener(queues = QueueConstants.DELETION_QUEUE)
-    private void consumoEraseVideo(EraseDto eraseDto){
+    private void consumoEraseVideo(EraseDto eraseDto) throws InterruptedException {
         log.info("Consumido Fila ERASE: {}", eraseDto.pathToRemove);
-        FileHandler.eraseFile(eraseDto.pathToRemove);
+        if(SectransConstantes.REMOVE_FILES){
+            FileHandler.eraseFile(eraseDto.pathToRemove);
+        }
     }
 }

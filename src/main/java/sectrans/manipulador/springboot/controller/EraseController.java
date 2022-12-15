@@ -21,7 +21,6 @@ public class EraseController {
     private ResponseEntity eraseFile(@RequestBody EraseDto eraseDto){
 
         this.rabbitMQService.enviaMensagem(QueueConstants.DELETION_QUEUE, eraseDto);
-        System.out.println(eraseDto.pathToRemove);
         return new ResponseEntity(HttpStatus.OK);
 
     }

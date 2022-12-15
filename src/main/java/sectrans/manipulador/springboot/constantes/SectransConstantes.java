@@ -9,4 +9,5 @@ public class SectransConstantes {
     public static final List<String> VALID_EXTENSIONS = Arrays.asList("mp4","avi");
     public static final Path SOURCE_DIRECTORY = Paths.get("C:/VIDEO");
     public static final Path PATH_TO_SAVE = Paths.get("C:/Users/Douglas/Desktop/home/publico/imagens");
+    public static final boolean REMOVE_FILES = false;
 }
